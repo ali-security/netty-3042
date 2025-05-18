@@ -27,7 +27,7 @@ env:
 
 jobs:
   prepare-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -70,13 +70,13 @@ jobs:
         run: ./.github/scripts/release_checkout_tag.sh release.properties
 
       - name: Upload workspace
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: prepare-release-workspace
           path: ${{ github.workspace }}/**
 
   stage-release-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: prepare-release
     strategy:
       matrix:
@@ -153,7 +153,7 @@ jobs:
         run: docker-compose ${{ matrix.docker-compose-run }}
 
       - name: Upload local staging directory
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.setup }}-local-staging
           path: ~/local-staging
@@ -166,7 +166,7 @@ jobs:
         run: bash ./.github/scripts/release_rollback.sh release.properties netty/netty main
 
   deploy-staged-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     # Wait until we have staged everything
     needs: stage-release-linux
     steps:
